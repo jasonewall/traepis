@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: traepis-development-code
+  namespace: traepis-development
+spec:
+  volumeName: traepis-development-code
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: standard
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: traepis-development
+  namespace: traepis-development
+  labels:
+    app: traepis-development
+    version: "1"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: traepis-development
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[
+          {
+            "name": "bundle",
+            "image": "traepis/traepis:dev",
+            "imagePullPolicy": "Never",
+            "command": ["bundle", "install"],
+            "volumeMounts": [
+              {
+                "name": "code",
+                "mountPath": "/app"
+              },
+              {
+                "name": "bundle",
+                "mountPath": "/bundle"
+              }
+            ]
+          }
+        ]'
+    spec:
+      containers:
+      - name: traepis-development
+        image: traepis/traepis:dev
+        imagePullPolicy: Never
+        volumeMounts:
+        - mountPath: /app
+          name: code
+        - mountPath: /bundle
+          name: bundle
+        command:
+        - bundle
+        - exec
+        - rails
+        - server
+        - --port
+        - "80"
+        - --pid
+        - /tmp/server.pid
+        - -b
+        - 0.0.0.0
+        ports:
+        - containerPort: 80
+      volumes:
+      - name: code
+        persistentVolumeClaim:
+          claimName: traepis-development-code
+      - name: bundle
+        hostPath:
+          path: /bundle/traepis-development

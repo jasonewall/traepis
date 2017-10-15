@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+eval $(minikube docker-env)
+
+docker build -t traepis/traepis:dev ./.minikube
+
+LOCAL_CONFIG=.minikube/config/2.localconfig.yaml
+LOCAL_CONFIG_EXAMPLE=.minikube/2.localconfig.example.yaml
+
+if [ ! -e $LOCAL_CONFIG ]; then
+  cp $LOCAL_CONFIG_EXAMPLE $LOCAL_CONFIG
+  echo "Now that that's over with - go edit $LOCAL_CONFIG to match your environment"
+fi
