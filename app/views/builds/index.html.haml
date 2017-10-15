@@ -1,0 +1,28 @@
+#builds-index.container-fluid
+  %h1.info= t('.builds')
+
+  - if @builds
+    %table.table
+      %thead
+        %th= t('.th.id')
+        %th= t('.th.domain')
+        %th= t('.th.image')
+        %th &nbsp;
+      %tbody
+
+  %a(anchor="add-form")
+  .form-centered
+    %h3.form-header= t('.new_build')
+    = form_for(Build.new, html: { class: 'form-horizontal' }) do |f|
+      .form-group
+        = f.label :id, 'ID', class: 'control-label col-sm-2'
+        .col-sm-5.build_id= f.text_field :id, class: 'form-control text-right'
+        .col-sm-5.control-label.domain= root_application_domain
+      .form-group
+        = f.label :image_tag, 'Image Tag', class: 'control-label col-sm-2'
+        .col-sm-6.control-label.image_tag= application_docker_repository
+        .col-sm-4.image_tag= f.text_field :image_tag, class: 'form-control'
+      .form-group.buttons
+        .col-sm-10.col-sm-offset-2
+          %button.btn.btn-primary= t('Create')
+          %button.btn(type="reset")= t('reset')
