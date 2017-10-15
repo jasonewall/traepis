@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+function pods() {
+  kubectl get pods -n traepis-development
+}
+
+function container() {
+  pods | grep traepis-development | awk '{ print $1 }' | head -n 1
+}
+
+function bundle() {
+  kubectl exec --namespace traepis-development --stdin --tty $(container) bundle $*
+}
+
+function rails() {
+  bundle exec rails $*
+}
