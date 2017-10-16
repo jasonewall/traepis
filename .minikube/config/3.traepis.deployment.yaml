@@ -57,6 +57,8 @@ spec:
           name: code
         - mountPath: /bundle
           name: bundle
+        - mountPath: /mnt/k8s-config
+          name: k8s-config
         command:
         - bundle
         - exec
@@ -71,6 +73,10 @@ spec:
         ports:
         - containerPort: 80
         env:
+        - name: KUBERNETES_OBJECT_CONFIG_FILE_DIR
+          value: /mnt/k8s-config
+        - name: KUBERNETES_DEFAULT_NAMESPACE
+          value: traepis-development
         - name: ROOT_APPLICATION_DOMAIN
           value: traepis.test
         - name: APPLICATION_DOCKER_REPOSITORY
@@ -82,3 +88,13 @@ spec:
       - name: bundle
         hostPath:
           path: /bundle/traepis-development
+      - name: k8s-config
+        configMap:
+          name: traepis-development
+          items:
+          - key: deployment.yaml
+            path: deployment.yaml
+          - key: services.yaml
+            path: services.yaml
+          - key: ingress.yaml
+            path: ingress.yaml

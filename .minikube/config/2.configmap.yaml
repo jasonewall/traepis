@@ -1,0 +1,65 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: traepis-development
+  namespace: traepis-development
+data:
+  deployment.yaml: |
+    kind: Deployment
+    apiVersion: extensions/v1beta1
+    metadata:
+      name: <%= build.id %>-cheese
+      labels:
+        app: cheese
+        cheese: <%= build.id %>
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app: cheese
+          task: <%= build.id %>
+      template:
+        metadata:
+          labels:
+            app: cheese
+            task: <%= build.id %>
+            version: v0.0.1
+        spec:
+          containers:
+          - name: cheese
+            image: errm/cheese:<%= build.image_tag %>
+            ports:
+            - containerPort: 80
+  services.yaml: |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: <%= build.id %>
+      annotations:
+        traefik.backend.circuitbreaker: "NetworkErrorRatio() > 0.5"
+    spec:
+      ports:
+      - name: http
+        targetPort: 80
+        port: 80
+      selector:
+        app: cheese
+        task: <%= build.id %>
+  ingress.yaml: |
+    apiVersion: extensions/v1beta1
+    kind: Ingress
+    metadata:
+      name: cheese
+      annotations:
+        kubernetes.io/ingress.class: traefik
+      labels:
+        ingress-controller: traepis-development
+    spec:
+      rules:
+      - host: <%= build.id %>.minikube
+        http:
+          paths:
+          - path: /
+            backend:
+              serviceName: <%= build.id %>
+              servicePort: http

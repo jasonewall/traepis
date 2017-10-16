@@ -1,0 +1,5 @@
+- if flash[:errors]
+  .alert.alert-errors
+    %ul#errors
+      - Array(flash[:errors]).each do |msg|
+        %li= msg
