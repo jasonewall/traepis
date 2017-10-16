@@ -7,7 +7,10 @@ module Adapters::Kubernetes
 module_function
 
   def client
-    @client ||= Kubeclient::Client.new(service_url, 'v1', auth_options: auth_options, ssl_options: ssl_options)
+    @client ||= Client.new(
+      Kubeclient::Client.new(service_url, 'v1', auth_options: auth_options, ssl_options: ssl_options),
+      Kubeclient::Client.new(service_url('apis'), 'extensions/v1beta1', auth_options: auth_options, ssl_options: ssl_options)
+    )
   end
 
   def clients
@@ -15,7 +18,7 @@ module_function
   end
 
   def service_url(api = 'api')
-    @service_url ||= "https://#{ENV[HttpsServiceHostEnv]}:#{ENV[HttpsServicePortEnv]}/#{api}/"
+    "https://#{ENV[HttpsServiceHostEnv]}:#{ENV[HttpsServicePortEnv]}/#{api}/"
   end
 
   def auth_options
@@ -28,5 +31,38 @@ module_function
     @ssl_options ||= {
       ca_file: CaFilePath
     }
+  end
+
+  class Client
+    def initialize(*kube_clients)
+      @kube_clients = kube_clients.reduce({}) do |memo, v|
+        memo[v.instance_variable_get(:@api_version)] = v
+        memo
+      end
+    end
+
+    def kube_clients
+      @kube_clients.values
+    end
+
+    def create(object)
+    end
+
+    def get_all_managed_objects
+      entities = kube_clients.reduce({}) do |m, c|
+        m.merge(c.all_entities(label_selector: "traepis.instance.id=#{ENV.fetch(TraepisInstanceId)}").except('component_status'))
+      end
+
+      pertinent_keys = entities.keys.select { |x| entities[x].count > 0 }
+      pertinent_keys.reduce({}) do |memo, k|
+        entities[k].each do |e|
+          id = e.metadata.labels['traepis.build.id'].first
+          memo[id] ||= {}
+          memo[id][k] ||= []
+          memo[id][k] << e
+        end
+        memo
+      end
+    end
   end
 end

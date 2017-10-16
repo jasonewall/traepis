@@ -14,7 +14,7 @@
             %td= build.id
             %td
             %td= "#{application_docker_repository}#{build.image_tag}"
-            %td= link_to 'Edit', build_path(build.as_path)
+            %td= link_to 'Edit', build_path(build)
 
   %a(anchor="add-form")
   .form-centered

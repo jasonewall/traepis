@@ -81,6 +81,8 @@ spec:
           value: traepis.test
         - name: APPLICATION_DOCKER_REPOSITORY
           value: your-company/your-app
+        - name: TRAEPIS_INSTANCE_ID
+          value: traepis-development
       volumes:
       - name: code
         persistentVolumeClaim:
