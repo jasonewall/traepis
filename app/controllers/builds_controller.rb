@@ -13,4 +13,8 @@ class BuildsController < ApplicationController
       render :index
     end
   end
+
+  def show
+    @build = builds_repository.find(params[:id])
+  end
 end

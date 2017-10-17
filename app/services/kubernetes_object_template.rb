@@ -23,7 +23,7 @@ class KubernetesObjectTemplate
     end
   end
 
-  delegate :[], to: :resource_template
+  delegate :[], :kind, to: :resource_template
 
   def initialize(template)
     @template = template

@@ -57,14 +57,27 @@ module_function
     def get_all_key_objects(key_resource)
       klass = resource_class(key_resource)
       kind = key_resource['kind']
-      options = { label_selector: "traepis.instance.id=#{ENV.fetch(TraepisInstanceId)}" }
-      entities = @kube_clients[key_resource['apiVersion']].get_entities(key_resource['kind'], klass, resource_names[kind], options)
+      entities = @kube_clients[key_resource['apiVersion']].get_entities(key_resource['kind'], klass, resource_names[kind], default_options)
 
       entities.reduce({}) do |memo, e|
         id = e.metadata.labels['traepis.build.id']
         memo[id] ||= {}
         memo[id][kind] ||= []
         memo[id][kind] << e
+        memo
+      end
+    end
+
+    def get_objects_by_id(id, resources)
+      resources.reduce({}) do |memo, r|
+        memo[r.kind] ||= []
+        memo[r.kind] << @kube_clients[r['apiVersion']].get_entity(
+          resource_class(r),
+          resource_names[r.kind],
+          r.metadata.name,
+          r.metadata.namespace,
+          default_options.merge(Build::TraepisBuildId => id)
+        )
         memo
       end
     end
@@ -77,6 +90,10 @@ module_function
       @resource_names ||= Hash.new do |h, kind|
         h[kind] = entities.values.flatten.find { |x| x.entity_type == kind }.resource_name
       end
+    end
+
+    def default_options
+      @default_options = { label_selector: "traepis.instance.id=#{ENV.fetch(TraepisInstanceId)}" }
     end
   end
 end

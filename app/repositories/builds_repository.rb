@@ -14,6 +14,10 @@ class BuildsRepository
     end
   end
 
+  def find(id)
+    Build.from_k8s_api(id, kube_client.get_objects_by_id(id, KubernetesObjectTemplate.all.map { |t| t.define_object(Build.new(id: id, image_tag: 'find')) }))
+  end
+
   def errors
     @errors
   end
