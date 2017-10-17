@@ -13,10 +13,6 @@ module_function
     )
   end
 
-  def clients
-    @clients ||= {}
-  end
-
   def service_url(api = 'api')
     "https://#{ENV[HttpsServiceHostEnv]}:#{ENV[HttpsServicePortEnv]}/#{api}/"
   end
@@ -37,6 +33,7 @@ module_function
     def initialize(*kube_clients)
       @kube_clients = kube_clients.reduce({}) do |memo, v|
         memo[v.instance_variable_get(:@api_version)] = v
+        v.discover unless v.discovered
         memo
       end
     end
@@ -45,25 +42,40 @@ module_function
       @kube_clients.values
     end
 
-    def create_object(object)
-      client = @kube_clients[object['apiVersion']]
-      client.send("create_#{object.kind.underscore}", object)
+    def entities
+      @entities = @kube_clients.reduce({}) do |memo, (k,v)|
+        memo[k] = v.instance_variable_get(:@entities).values
+        memo
+      end
     end
 
-    def get_all_managed_objects
-      entities = kube_clients.reduce({}) do |m, c|
-        m.merge(c.all_entities(label_selector: "traepis.instance.id=#{ENV.fetch(TraepisInstanceId)}").except('component_status'))
-      end
+    def create_object(object)
+      client = @kube_clients[object['apiVersion']]
+      client.send(:create_entity, object.kind, resource_names[object.kind], object, resource_class(object))
+    end
 
-      pertinent_keys = entities.keys.select { |x| entities[x].count > 0 }
-      pertinent_keys.reduce({}) do |memo, k|
-        entities[k].each do |e|
-          id = e.metadata.labels['traepis.build.id']
-          memo[id] ||= {}
-          memo[id][k] ||= []
-          memo[id][k] << e
-        end
+    def get_all_key_objects(key_resource)
+      klass = resource_class(key_resource)
+      kind = key_resource['kind']
+      options = { label_selector: "traepis.instance.id=#{ENV.fetch(TraepisInstanceId)}" }
+      entities = @kube_clients[key_resource['apiVersion']].get_entities(key_resource['kind'], klass, resource_names[kind], options)
+
+      entities.reduce({}) do |memo, e|
+        id = e.metadata.labels['traepis.build.id']
+        memo[id] ||= {}
+        memo[id][kind] ||= []
+        memo[id][kind] << e
         memo
+      end
+    end
+
+    def resource_class(resource)
+      Kubeclient::ClientMixin.resource_class(Kubeclient, resource['kind'])
+    end
+
+    def resource_names
+      @resource_names ||= Hash.new do |h, kind|
+        h[kind] = entities.values.flatten.find { |x| x.entity_type == kind }.resource_name
       end
     end
   end

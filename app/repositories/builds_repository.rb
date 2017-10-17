@@ -9,7 +9,7 @@ class BuildsRepository
   end
 
   def all
-    kube_client.get_all_managed_objects.map do |id, objects|
+    kube_client.get_all_key_objects(KubernetesObjectTemplate.first).map do |id, objects|
       Build.from_k8s_api(id, objects)
     end
   end
