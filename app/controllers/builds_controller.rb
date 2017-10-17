@@ -1,4 +1,8 @@
 class BuildsController < ApplicationController
+  def index
+    @builds = builds_repository.all
+  end
+
   def create
     @build = Build.new(params.require(:build).permit(:image_tag, :id))
 

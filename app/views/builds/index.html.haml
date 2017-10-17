@@ -1,7 +1,7 @@
 #builds-index.container-fluid
   %h1.info= link_to t('.builds'), builds_path
 
-  - if @builds
+  - if @builds.present?
     %table.table
       %thead
         %th= t('.th.id')
@@ -12,9 +12,9 @@
         - @builds.each do |build|
           %tr
             %td= build.id
-            %td
-            %td= "#{application_docker_repository}#{build.image_tag}"
-            %td= link_to 'Edit', build_path(build)
+            %td= build.domain
+            %td= build.image
+            %td= link_to 'Edit', build_path(build.id)
 
   %a(anchor="add-form")
   .form-centered

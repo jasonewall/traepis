@@ -56,7 +56,7 @@ module_function
       pertinent_keys = entities.keys.select { |x| entities[x].count > 0 }
       pertinent_keys.reduce({}) do |memo, k|
         entities[k].each do |e|
-          id = e.metadata.labels['traepis.build.id'].first
+          id = e.metadata.labels['traepis.build.id']
           memo[id] ||= {}
           memo[id][k] ||= []
           memo[id][k] << e

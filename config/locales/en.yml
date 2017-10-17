@@ -35,6 +35,6 @@ en:
       builds: Builds
       th:
         id: ID
-        domain: URL
+        domain: Domain
         image: Image
       new_build: Add New Build
