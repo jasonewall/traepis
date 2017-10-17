@@ -49,7 +49,7 @@ data:
     apiVersion: extensions/v1beta1
     kind: Ingress
     metadata:
-      name: cheese
+      name: cheese-<%= build.id %>
       annotations:
         kubernetes.io/ingress.class: traefik
       labels:

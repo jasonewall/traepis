@@ -23,7 +23,7 @@ private
   def commit(build)
     objects = KubernetesObjectTemplate.all.map { |t| t.define_object(build) }
     objects.each do |o|
-      kube_client.create(o)
+      kube_client.create_object(o)
     end
   end
 

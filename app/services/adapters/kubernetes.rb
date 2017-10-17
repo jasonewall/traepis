@@ -45,7 +45,9 @@ module_function
       @kube_clients.values
     end
 
-    def create(object)
+    def create_object(object)
+      client = @kube_clients[object['apiVersion']]
+      client.send("create_#{object.kind.underscore}", object)
     end
 
     def get_all_managed_objects
