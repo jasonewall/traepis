@@ -22,6 +22,10 @@ class Build < ApplicationRecord
     "#{application_docker_repository}#{image_tag}"
   end
 
+  def persisted?
+    @objects.present?
+  end
+
   def annotations
     @annotations ||= {
       'metadata' => {

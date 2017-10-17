@@ -20,15 +20,9 @@
   .form-centered
     = render('messages')
     %h3.form-header= t('.new_build')
-    = form_for(@build || Build.new, html: { class: 'new_build form-horizontal' }) do |f|
-      .form-group
-        = f.label :id, 'ID', class: 'control-label col-sm-2'
-        .col-sm-5.build_id= f.text_field :id, class: 'form-control text-right'
-        .col-sm-5.control-label.domain= root_application_domain
-      .form-group
-        = f.label :image_tag, 'Image Tag', class: 'control-label col-sm-2'
-        .col-sm-6.control-label.image_tag= application_docker_repository
-        .col-sm-4.image_tag= f.text_field :image_tag, class: 'form-control'
+    = form_for(@build || Build.new, html: { class: 'build_form form-horizontal' }) do |f|
+      = build_id_control f
+      = build_image_tag_control f
       .form-group.buttons
         .col-sm-10.col-sm-offset-2
           %button.btn.btn-primary= t('Create')
