@@ -27,6 +27,13 @@ private
     end
   end
 
+  def delete(build)
+    objects = build.objects.values.flatten
+    objects.each do |o|
+      kube_client.delete_object(o)
+    end
+  end
+
   def kube_client
     @kube_client ||= Adapters::Kubernetes.client
   end

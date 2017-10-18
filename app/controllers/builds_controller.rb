@@ -28,6 +28,12 @@ class BuildsController < ApplicationController
     end
   end
 
+  def destroy
+    if builds_repository.destroy(@build)
+      redirect_to builds_path
+    end
+  end
+
 private
 
   def find_build

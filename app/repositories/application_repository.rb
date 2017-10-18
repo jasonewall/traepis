@@ -21,4 +21,8 @@ class ApplicationRepository
 
     record.commit if committed
   end
+
+  def destroy(record)
+    delete(record)
+  end
 end
