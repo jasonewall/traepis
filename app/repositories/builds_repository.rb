@@ -1,13 +1,4 @@
-class BuildsRepository
-  def save(build)
-    if build.valid?
-      commit(build)
-    else
-      @errors = build.errors
-      false
-    end
-  end
-
+class BuildsRepository < ApplicationRepository
   def all
     kube_client.get_all_key_objects(KubernetesObjectTemplate.first).map do |id, objects|
       Build.from_k8s_api(id, objects)
@@ -18,16 +9,21 @@ class BuildsRepository
     Build.from_k8s_api(id, kube_client.get_objects_by_id(id, KubernetesObjectTemplate.all.map { |t| t.define_object(Build.new(id: id, image_tag: 'find')) }))
   end
 
-  def errors
-    @errors
-  end
-
 private
 
-  def commit(build)
+  def create_new(build)
     objects = KubernetesObjectTemplate.all.map { |t| t.define_object(build) }
     objects.each do |o|
       kube_client.create_object(o)
+    end
+  end
+
+  def update(build)
+    if build.changed
+      objects = KubernetesObjectTemplate.all.map { |t| t.define_object(build) }
+      objects.each do |o|
+        kube_client.update_object(o)
+      end
     end
   end
 

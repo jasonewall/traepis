@@ -3,3 +3,9 @@
     %ul#errors
       - Array(flash[:errors]).each do |msg|
         %li= msg
+
+- if flash[:notice]
+  .alert.alert-success
+    %ul#messages
+      - Array(flash[:notice]).each do |msg|
+        %li= msg

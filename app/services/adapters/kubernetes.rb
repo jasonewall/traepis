@@ -54,6 +54,11 @@ module_function
       client.send(:create_entity, object.kind, resource_names[object.kind], object, resource_class(object))
     end
 
+    def update_object(object)
+      client = @kube_clients[object['apiVersion']]
+      client.send(:patch_entity, resource_names[object.kind], object.metadata.name, object, object.metadata.namespace)
+    end
+
     def get_all_key_objects(key_resource)
       klass = resource_class(key_resource)
       kind = key_resource['kind']

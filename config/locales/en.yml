@@ -38,3 +38,5 @@ en:
         domain: Domain
         image: Image
       new_build: Add New Build
+    update:
+      success: Build successfully updated.

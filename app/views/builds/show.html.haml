@@ -5,6 +5,7 @@
     = @build.id
 
   .form-centered
+    = render('messages')
     = form_for(@build, html: { class: 'build_form form-horizontal' }) do |f|
       = build_image_tag_control f
       .form-group.buttons.text-right

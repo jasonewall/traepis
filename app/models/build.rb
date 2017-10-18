@@ -3,8 +3,8 @@ class Build < ApplicationRecord
   TraepisBuildId = 'traepis.build.id'.freeze
   TraepisBuildImageTag = 'traepis.build.image_tag'.freeze
 
-  attr_accessor :id,
-                :image_tag
+  model_attr :id,
+             :image_tag
 
   validates_presence_of :id, :image_tag
 
