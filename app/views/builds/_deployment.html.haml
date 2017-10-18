@@ -1,0 +1,7 @@
+.field
+  %span.label= t('.labels.containers')
+  .value
+    - object.spec.template.spec.containers.each do |c|
+      = c.name
+      &raquo;
+      = c.image

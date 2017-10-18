@@ -28,7 +28,11 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'kubeclient'
 
-gem 'material-design-rails'
+gem 'less-rails'
+gem 'twitter-bootstrap-rails'
+gem 'haml'
+gem 'activemodel'
+
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password

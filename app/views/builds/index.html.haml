@@ -1,0 +1,29 @@
+#builds-index.container-fluid
+  %h1.info= link_to t('.builds'), builds_path
+
+  - if @builds.present?
+    %table.table
+      %thead
+        %th= t('.th.id')
+        %th= t('.th.domain')
+        %th= t('.th.image')
+        %th &nbsp;
+      %tbody
+        - @builds.each do |build|
+          %tr
+            %td= build.id
+            %td= build.domain
+            %td= build.image
+            %td= link_to 'Edit', build_path(build)
+
+  %a(anchor="add-form")
+  .form-centered
+    = render('messages')
+    %h3.form-header= t('.new_build')
+    = form_for(@build || Build.new, html: { class: 'build_form form-horizontal' }) do |f|
+      = build_id_control f
+      = build_image_tag_control f
+      .form-group.buttons
+        .col-sm-10.col-sm-offset-2
+          %button.btn.btn-primary= t('Create')
+          %button.btn(type="reset")= t('reset')

@@ -30,4 +30,13 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  builds:
+    index:
+      builds: Builds
+      th:
+        id: ID
+        domain: Domain
+        image: Image
+      new_build: Add New Build
+    update:
+      success: Build successfully updated.

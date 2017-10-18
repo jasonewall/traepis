@@ -22,4 +22,4 @@
 
 .byebug_history
 
-.minikube/config/2.configmap.yaml
+.minikube/config/2.localconfig.yaml

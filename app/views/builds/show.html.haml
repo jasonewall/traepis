@@ -1,0 +1,30 @@
+#build-show.container-fluid
+  %h1
+    = link_to t('.builds'), builds_path
+    &raquo;
+    = @build.id
+
+  .form-centered
+    = render('messages')
+    = form_for(@build, html: { class: 'build_form form-horizontal' }) do |f|
+      = build_image_tag_control f
+      .form-group.buttons.text-right
+        %button.btn.btn-primary= t('.update')
+        %button.btn(type="reset")= t('reset')
+
+  - @build.objects.keys.each do |type|
+    .yolo
+      %h3= type.pluralize
+      .card-category
+        - @build.objects[type].each do |o|
+          .card
+            .field
+              %span.label= t('.labels.name')
+              %span.value= o.metadata.name
+            .field
+              %span.label= t('.labels.namespace')
+              %span.value= o.metadata.namespace
+            - if %w(Deployment).include?(type)
+              = render type.underscore, object: o
+  .buttons.text-right.form-centered
+    = link_to 'Delete', build_path(@build.id), class: 'btn btn-danger', method: :delete
