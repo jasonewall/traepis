@@ -15,3 +15,11 @@ function bundle() {
 function rails() {
   bundle exec rails $*
 }
+
+function rspec() {
+  bundle exec rspec $*
+}
+
+function rescue() {
+  bundle exec rescue $*
+}

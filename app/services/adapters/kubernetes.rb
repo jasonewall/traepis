@@ -39,7 +39,7 @@ module_function
     end
 
     def kube_clients
-      @kube_clients.values
+      @kube_clients
     end
 
     def entities
