@@ -30,6 +30,6 @@ spec:
       - image: traefik
         name: traefik
         args:
-        - --web
+        - --api
         - --kubernetes
         - --kubernetes.labelSelector=ingress-controller=traepis-development

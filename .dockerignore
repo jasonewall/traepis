@@ -1,1 +1,7 @@
 .minikube
+.git
+.gitignore
+.k8src
+build
+
+test
