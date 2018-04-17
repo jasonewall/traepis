@@ -5,3 +5,5 @@
 build
 
 test
+
+config/auth/config.yml
