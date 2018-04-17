@@ -1,0 +1,6 @@
+development:
+  type: basic
+  users:
+    admin: "$2a$10$KSOKTW1Gd1Srj165OUo2U.227GQFRSOjloHxuHTtByWJBKjOLVAs2" # admin:password - but this is encrypted
+
+    # use rake password:encrypt[your_password] to generate your own
