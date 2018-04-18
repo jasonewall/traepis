@@ -15,7 +15,10 @@ private
 
   def check_basic_auth(controller)
     controller.authenticate_with_http_basic do |username, password|
-      username if BCrypt::Password.new(@auth_config['users'][username]) == password
+      begin
+        username if BCrypt::Password.new(@auth_config['users'][username]) == password
+      rescue BCrypt::Errors::InvalidHash
+      end
     end
   end
 end
