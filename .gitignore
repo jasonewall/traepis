@@ -23,3 +23,5 @@
 .byebug_history
 
 .minikube/config/2.localconfig.yaml
+
+config/auth/config.yml

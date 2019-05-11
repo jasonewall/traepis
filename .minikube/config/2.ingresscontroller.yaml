@@ -30,6 +30,11 @@ spec:
       - image: traefik
         name: traefik
         args:
-        - --web
+        - --api
         - --kubernetes
         - --kubernetes.labelSelector=ingress-controller=traepis-development
+        - --entryPoints=Name:http Address::80
+        - --entryPoints=Name:traefik Address::6001
+        ports:
+        - containerPort: 80
+        - containerPort: 6001

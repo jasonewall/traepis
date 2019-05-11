@@ -1,0 +1,11 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: auth-config
+  namespace: traepis-qa
+data:
+  config.yml: |
+    production:
+      type: basic
+      users:
+        admin: "$2a$10$KSOKTW1Gd1Srj165OUo2U.227GQFRSOjloHxuHTtByWJBKjOLVAs2"

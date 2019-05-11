@@ -1,4 +1,4 @@
-class BuildsController < ApplicationController
+class BuildsController < SecureController
   before_action :find_build, only: [:show, :update, :destroy]
 
   def index

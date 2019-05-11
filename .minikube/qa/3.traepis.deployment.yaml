@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: traepis-qa
+  namespace: traepis-qa
+  labels:
+    app: traepis-qa
+    version: "1"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: traepis-qa
+    spec:
+      containers:
+      - name: traepis
+        image: index.docker.io/jasonewall/traepis:v0.0.2
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - mountPath: /mnt/k8s-config
+          name: k8s-config
+        - mountPath: /app/config/auth
+          name: auth-config
+        ports:
+        - containerPort: 80
+        env:
+        - name: KUBERNETES_OBJECT_CONFIG_FILE_DIR
+          value: /mnt/k8s-config
+        - name: KUBERNETES_DEFAULT_NAMESPACE
+          value: traepis-qa
+        - name: ROOT_APPLICATION_DOMAIN
+          value: traepis.test
+        - name: APPLICATION_DOCKER_REPOSITORY
+          value: your-company/your-app
+        - name: TRAEPIS_INSTANCE_ID
+          value: traepis-qa
+      volumes:
+      - name: k8s-config
+        configMap:
+          name: k8s-templates
+          items:
+          - key: deployment.yaml
+            path: deployment.yaml
+          - key: services.yaml
+            path: services.yaml
+          - key: ingress.yaml
+            path: ingress.yaml
+      - name: auth-config
+        configMap:
+          name: auth-config
+          items:
+          - key: config.yml
+            path: config.yml
